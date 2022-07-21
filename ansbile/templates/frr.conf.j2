@@ -41,7 +41,7 @@ interface enp0s10
 !Начало настройки OSPF
 router ospf
     !Указываем router-id
-    router-id 1.1.1.1
+    router-id {{ router_id }}
     !Указываем сети, которые хотим анонсировать соседним роутерам
     network 10.0.10.0/30 area 0
     network 10.0.12.0/30 area 0
