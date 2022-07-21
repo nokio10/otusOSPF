@@ -1,0 +1,9 @@
+symmetric_routing: false
+
+router_id:
+  -  router_name: router1
+     id: 1.1.1.1
+  -  router_name: router2
+     id: 2.2.2.2
+  -  router_name: router3
+     id: 3.3.3.3
