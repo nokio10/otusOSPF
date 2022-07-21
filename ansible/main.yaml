@@ -15,7 +15,6 @@
         - net-tools
       state: present
       update_cache: true
-
 #Отключаем UFW и удаляем его из автозагрузки
   - name: disable ufw service
     service:
@@ -48,12 +47,15 @@
       state: present
   # Копируем файл daemons на хосты, указываем владельца и права
   - name: base set up OSPF
-    template:
-      src: daemons
+    lineinfile:
       dest: /etc/frr/daemons
-      owner: frr
-      group: frr
-      mode: 0640 
+      line: "zebra=yes"
+      regexp: '^zebra=no'
+  - name: base set up OSPF
+    lineinfile:
+      dest: /etc/frr/daemons
+      line: "ospfd=yes"
+      regexp: '^ospfd=no' 
   # Перезапускам FRR и добавляем в автозагрузку
   - name: restart FRR
     service:

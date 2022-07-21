@@ -12,7 +12,7 @@ interface enp0s8
     !Указываем имя интерфейса
     description r1-r2
     !Указываем ip-aдрес и маску (эту информацию мы получили в прошлом шаге)
-    ip address 10.0.10.1/30
+    ip address {{ item.ip1 }}/30
     !Указываем параметр игнорирования MTU
     ip ospf mtu-ignore
     !Если потребуется, можно указать «стоимость» интерфейса
@@ -31,7 +31,7 @@ interface enp0s8
 !
 interface enp0s9
     description r1-r3
-    ip address 10.0.12.1/30
+    ip address {{ item.ip2 }}/30
     ip ospf mtu-ignore
     {% if ansible_hostname == 'router1' %}
     ip ospf cost 1000
@@ -44,7 +44,7 @@ interface enp0s9
     ip ospf dead-interval 30
 interface enp0s10
     description net_router1
-    ip address 192.168.10.1/24
+    ip address {{ item.ip3 }}/24
     ip ospf mtu-ignore
     {% if ansible_hostname == 'router1' %}
     ip ospf cost 1000
@@ -61,12 +61,30 @@ router ospf
     !Указываем router-id
     router-id {{ item.id }}
     !Указываем сети, которые хотим анонсировать соседним роутерам
+{% if ansible_hostname == 'router1' %}
     network 10.0.10.0/30 area 0
     network 10.0.12.0/30 area 0
     network 192.168.10.0/24 area 0
     !Указываем адреса соседних роутеров
     neighbor 10.0.10.2
     neighbor 10.0.12.2
+{% endif %}
+{% if ansible_hostname == 'router3' %}
+    network 10.0.11.0/30 area 0
+    network 10.0.12.0/30 area 0
+    network 192.168.30.0/24 area 0
+    !Указываем адреса соседних роутеров
+    neighbor 10.0.11.2
+    neighbor 10.0.12.1
+{% endif %}
+{% if ansible_hostname == 'router2' %}
+    network 10.0.10.0/30 area 0
+    network 10.0.11.0/30 area 0
+    network 192.168.20.0/24 area 0
+    !Указываем адреса соседних роутеров
+    neighbor 10.0.10.1
+    neighbor 10.0.11.1
+{% endif %}
 !Указываем адрес log-файла
 log file /var/log/frr/frr.log
 default-information originate always
